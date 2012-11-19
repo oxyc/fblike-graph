@@ -1,3 +1,4 @@
+/*globals describe:true it:true expect:true $:true */
 (function() {
   describe('Facebook Like button', function() {
     describe('#formatNumber()', function() {
@@ -24,35 +25,42 @@
         });
       });
       it('should fall back to default look when graph service is down', function(done) {
+        var graph_url = window.FBLike.graph_url;
         window.FBLike.graph_url = 'https://google.com/?';
         window.FBLike.parse(document.getElementById('box_count'), function() {
           expect($('#box_count').hasClass('facebook-fetch-error')).to.be(true);
           expect($('#box_count').find('iframe').width()).to.be(200);
           expect($('#box_count').find('.facebook-like-counter').is(':visible')).to.be(false);
+          expect($('#box_count').find('.facebook-like-number').text()).to.be.empty();
+          window.FBLike.graph_url = graph_url;
           done();
         });
       });
       it('should parse jQuery element', function(done) {
         window.FBLike.parse($('#foo'), function() {
           expect($('#foo').find('.facebook-like-box_count').length).to.equal(1);
+          expect($('#foo').find('.facebook-like-number').text()).to.not.be.empty();
           done();
         });
       });
       it('should parse dom element', function(done) {
         window.FBLike.parse(document.getElementById('bar'), function() {
           expect($('#bar').find('.facebook-like-box_count').length).to.equal(1);
+          expect($('#bar').find('.facebook-like-number').text()).to.not.be.empty();
           done();
         });
       });
       it('should parse css selector', function(done) {
         window.FBLike.parse('.selector-test', function() {
           expect($('.selector-test').find('.facebook-like-box_count').length).to.equal(1);
+          expect($('.selector-test').find('.facebook-like-number').text()).to.not.be.empty();
           done();
         });
       });
       it('should parse everything', function(done) {
         window.FBLike.parse(function() {
           expect($('#not_parsed').find('.facebook-like-box_count').length).to.equal(1);
+          expect($('#not_parsed').find('.facebook-like-number').text()).to.not.be.empty();
           done();
         });
       });
