@@ -64,6 +64,7 @@
       'position: absolute;',
       'left: 0;',
       'top: 0;',
+      'height: 0;',
     '}',
     '.facebook-like-button_count .facebook-like-nub i {',
       'border-right-color: white;',
@@ -73,7 +74,7 @@
     '.facebook-like iframe {',
       'border: none;',
       'overflow: hidden;',
-      'width: 46px;',
+      'width: 50px;',
     '}',
     '.facebook-fetch-error iframe {',
       'width: 200px',
@@ -82,7 +83,7 @@
       'display: none;',
     '}',
     '.facebook-like-nub, .facebook-like-counter {',
-      'display: inline-block',
+      'display: inline-block;',
     '}'
   ].join('');
 

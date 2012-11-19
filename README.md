@@ -35,7 +35,7 @@ Check the test suite for examples.
 * Exposes some internal functions which you can override for customization
 * Fails gracefully.
 * Has a test suite (Currently not tested crossbrowser!)
-* Browser support: IE7 (minor bug), IE8, Chrome 14+
+* Browser support: IE7-9, Chrome 14+, FF16, Opera 10+, Safari 5.1 (windows)
 * If the Graph API service is down, it will fall back silently to facebooks
   default counter.
 
@@ -45,6 +45,7 @@ Check the test suite for examples.
 * Currently only `box_count` and `button_count` works as a layout.
 * The message popup won't be displayed once liked as this method uses an
   iframe.
+* Tests fail in older FF (mocha), graceful fallback fails in safari < 5.1 (windows)
 
 ## License
 

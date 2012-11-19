@@ -1,6 +1,26 @@
-/*globals describe:true it:true expect:true $:true */
+/*globals describe:true it:true expect:true $:true before:true */
 (function() {
   describe('Facebook Like button', function() {
+    describe('correctness', function() {
+      var graph_count;
+      before(function(cb) {
+        var url = 'https://graph.facebook.com/fql?q=SELECT like_count FROM link_stat WHERE url = \'http://www.google.com\'';
+        $.ajax({
+          url: url,
+          dataType: 'jsonp',
+          timeout: 1000
+        }).done(function (data) {
+          graph_count = window.FBLike.formatNumber(data.data[0].like_count);
+          cb();
+        });
+      });
+      it('should display correct number', function(done) {
+        window.FBLike.parse($('#correctness'), function() {
+          expect($('#correctness').find('.facebook-like-number').text()).to.eql(graph_count);
+          done();
+        });
+      });
+    });
     describe('#formatNumber()', function() {
       it('should parse numbers correctly', function() {
         expect(window.FBLike.formatNumber(999)).to.equal('999');
