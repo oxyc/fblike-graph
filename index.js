@@ -2,6 +2,7 @@
   var FBLike = this.FBLike = {};
   var encode = window.encodeURIComponent;
   var style_element;
+  var count_type = 'like_count';
 
   FBLike.like_url = '//www.facebook.com/plugins/like.php?href=';
   FBLike.graph_url = 'https://graph.facebook.com/fql?q=';
@@ -144,7 +145,7 @@
 
   FBLike.fetch = function(dom, cb) {
     var url = dom.getAttribute('data-href');
-    var query = 'SELECT like_count FROM link_stat WHERE url = \'' + url + '\'';
+    var query = 'SELECT like_count, share_count, comment_count, total_count FROM link_stat WHERE url = \'' + url + '\'';
 
     $.ajax({
       url: FBLike.graph_url + encode(query),
@@ -179,7 +180,7 @@
     switch (textStatus) {
       case 'success':
         try {
-          var count = json.data[0].like_count;
+          var count = json.data[0][count_type];
           $(dom).find('.facebook-like-number').text(FBLike.formatNumber(count));
           success = true;
         } catch(e) {}
@@ -194,6 +195,10 @@
         .trigger('facebook-fetch-error');
     }
   }
+
+  FBLike.setCountType = function(type) {
+    count_type = type + '_count';
+  };
 
   FBLike.parse = function(dom, cb) {
     if (typeof dom === 'string') return FBLike.parse($(dom), cb);

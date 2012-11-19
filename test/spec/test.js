@@ -1,24 +1,52 @@
-/*globals describe:true it:true expect:true $:true before:true */
+/*globals describe:true it:true expect:true $:true before:true after: true */
 (function() {
   describe('Facebook Like button', function() {
     describe('correctness', function() {
       var graph_count;
       before(function(cb) {
-        var url = 'https://graph.facebook.com/fql?q=SELECT like_count FROM link_stat WHERE url = \'http://www.google.com\'';
+        var url = 'https://graph.facebook.com/fql?q=SELECT like_count, share_count, comment_count, total_count FROM link_stat WHERE url = \'http://www.google.com\'';
         $.ajax({
           url: url,
           dataType: 'jsonp',
           timeout: 1000
         }).done(function (data) {
-          graph_count = window.FBLike.formatNumber(data.data[0].like_count);
+          graph_count = data.data[0];
           cb();
         });
       });
-      it('should display correct number', function(done) {
-        window.FBLike.parse($('#correctness'), function() {
-          expect($('#correctness').find('.facebook-like-number').text()).to.eql(graph_count);
+      it('should calculate correct like_count', function(done) {
+        window.FBLike.parse($('#like_count'), function() {
+          var like_count = window.FBLike.formatNumber(graph_count.like_count);
+          expect($('#like_count').find('.facebook-like-number').text()).to.eql(like_count);
           done();
         });
+      });
+      it('should calculate correct share_count', function(done) {
+        window.FBLike.setCountType('share');
+        window.FBLike.parse($('#share_count'), function() {
+          var share_count = window.FBLike.formatNumber(graph_count.share_count);
+          expect($('#share_count').find('.facebook-like-number').text()).to.eql(share_count);
+          done();
+        });
+      });
+      it('should calculate correct comment_count', function(done) {
+        window.FBLike.setCountType('comment');
+        window.FBLike.parse($('#comment_count'), function() {
+          var comment_count = window.FBLike.formatNumber(graph_count.comment_count);
+          expect($('#comment_count').find('.facebook-like-number').text()).to.eql(comment_count);
+          done();
+        });
+      });
+      it('should calculate correct total_count', function(done) {
+        window.FBLike.setCountType('total');
+        window.FBLike.parse($('#total_count'), function() {
+          var total_count = window.FBLike.formatNumber(graph_count.total_count);
+          expect($('#total_count').find('.facebook-like-number').text()).to.eql(total_count);
+          done();
+        });
+      });
+      after(function() {
+        window.FBLike.setCountType('like');
       });
     });
     describe('#formatNumber()', function() {
