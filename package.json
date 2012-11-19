@@ -1,0 +1,9 @@
+{
+  "author": "Oskar Schöldström",
+  "name": "fblike",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "*"
+  }
+}

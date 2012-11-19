@@ -1,0 +1,29 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Mocha Spec Runner</title>
+  <link rel="stylesheet" href="lib/mocha/mocha.css">
+</head>
+<body>
+  <div id"main">
+    <div id="button_count" class="facebook-like" data-href="http://www.google.com" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+    <div id="box_count" class="facebook-like" data-href="http://www.facebook.com" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+    <div id="foo" class="facebook-like" data-href="http://www.google.fi" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+    <div id="bar" class="facebook-like" data-href="http://www.sonera.fi" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+    <div class="facebook-like selector-test" data-href="http://www.sonera.fi" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+    <div id="not_parsed" class="facebook-like" data-href="http://www.sonera.fi" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
+  </div>
+  <div id="mocha"></div>
+  <script src="lib/mocha/mocha.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="lib/expect.js"></script>
+  <script src="lib/jquery.min.js"></script>
+
+  <script src="../index.js"></script>
+
+  <script src="spec/test.js"></script>
+
+  <script src="runner/mocha.js"></script>
+</body>
+</html>
