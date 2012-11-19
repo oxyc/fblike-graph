@@ -74,7 +74,7 @@
     '.facebook-like iframe {',
       'border: none;',
       'overflow: hidden;',
-      'width: 50px;',
+      'width: 49px;',
     '}',
     '.facebook-fetch-error iframe {',
       'width: 200px',
