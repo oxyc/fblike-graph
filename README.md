@@ -45,7 +45,11 @@ Check the test suite for examples.
 * Currently only `box_count` and `button_count` works as a layout.
 * The message popup won't be displayed once liked as this method uses an
   iframe.
+
+## Known bugs
 * Tests fail in older FF (mocha), graceful fallback fails in safari < 5.1 (windows)
+* Currently the script does a ajax request on each button, I plan to bundle
+  these into one request.
 
 ## License
 
