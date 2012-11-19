@@ -17,6 +17,7 @@
       'color: #333;',
       'text-align: center;',
       'white-space: nowrap;',
+      'font-family: \'lucida grande\',tahoma,verdana,arial,sans-serif;',
     '}',
     // Box
     '.facebook-like-box_count {',
@@ -41,6 +42,7 @@
       'border: 1px solid #c1c1c1;',
       'height: 14px;',
       'line-height: 14px;',
+      'margin-top: 1px;',
       'margin-left: 6px;',
       'min-width: 15px;',
       'padding: 1px 2px;',
