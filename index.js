@@ -24,7 +24,7 @@
     '}',
     '.facebook-like-box_count .facebook-like-counter {',
       'left: 1px;',
-      'width: 40px;',
+      'width: 39px;',
       'height: 19px;',
       'padding: 6px 1px 2px 3px;',
       'top: 1px;',
@@ -145,11 +145,14 @@
 
     $.ajax({
       url: FBLike.graph_url + encode(query),
-      dataType: 'json',
-      complete: function(jqXHR, textStatus) {
-        updateCounter(dom, jqXHR, textStatus);
-        cb();
-      }
+      dataType: 'jsonp', // This is required for IE
+      timeout: 1000
+    }).done(function(data, textStatus) {
+      updateCounter(dom, data, textStatus);
+      if (typeof cb === 'function') cb();
+    }).fail(function(jqXHR, textStatus) {
+      updateCounter(dom, {}, textStatus);
+      if (typeof cb === 'function') cb();
     });
   };
 
@@ -168,11 +171,10 @@
     return FBLike.like_url + values.join('&amp;');
   }
 
-  function updateCounter(dom, jqXHR, textStatus) {
+  function updateCounter(dom, json, textStatus) {
     var success = false;
     switch (textStatus) {
       case 'success':
-        var json = $.parseJSON(jqXHR.responseText);
         try {
           var count = json.data[0].like_count;
           $(dom).find('.facebook-like-number').text(FBLike.formatNumber(count));
@@ -180,7 +182,7 @@
         } catch(e) {}
         break;
       case 'notmodified':
-        sucess = true;
+        success = true;
         break;
     }
     if (!success) {
@@ -200,7 +202,7 @@
     if (dom instanceof jQuery) {
       var i = 0;
       var count = dom.length;
-      var counter = function() {if (++i >= count) cb(); };
+      var counter = function() { if (++i >= count && typeof cb === 'function') cb(); };
 
       dom.each(function() {
         FBLike.parse(this, counter);

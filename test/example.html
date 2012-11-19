@@ -14,24 +14,11 @@
     <div class="facebook-like selector-test" data-href="http://www.sonera.fi" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
     <div id="not_parsed" class="facebook-like" data-href="http://www.sonera.fi" data-send="false" data-layout="box_count" data-width="450" data-show-faces="true" data-font="lucida grande"></div>
   </div>
-  <div id="mocha"></div>
-  <script src="lib/mocha/mocha.js"></script>
-  <script>mocha.setup({ ui: 'bdd', ignoreLeaks: true });</script>
-  <script src="lib/expect.js"></script>
   <script src="lib/jquery.min.js"></script>
-  <script>
-    // Fix mocha for IE
-    if (!console) {
-      console = {}
-      console.log = function() {};
-      console.error = function() {};
-    }
-  </script>
-
   <script src="../index.js"></script>
-
-  <script src="spec/test.js"></script>
-
-  <script src="runner/mocha.js"></script>
+  <script>
+    window.FBLike.parse();
+  </script>
 </body>
 </html>
+

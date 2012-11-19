@@ -26,7 +26,7 @@
       });
       it('should fall back to default look when graph service is down', function(done) {
         var graph_url = window.FBLike.graph_url;
-        window.FBLike.graph_url = 'https://google.com/?';
+        window.FBLike.graph_url = 'https://google.comasdsadasd/?';
         window.FBLike.parse(document.getElementById('box_count'), function() {
           expect($('#box_count').hasClass('facebook-fetch-error')).to.be(true);
           expect($('#box_count').find('iframe').width()).to.be(200);

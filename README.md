@@ -7,6 +7,8 @@ becomes very annoying as visitors see different results.
 This plugin tries to fix this by outputting the actual like count from Graph
 API.
 
+**Still in development**
+
 ## Getting started
 
 ```html
@@ -31,8 +33,9 @@ Check the test suite for examples.
 ## Features
 
 * Exposes some internal functions which you can override for customization
+* Fails gracefully.
 * Has a test suite (Currently not tested crossbrowser!)
-* Browser support: _(Coming soon!)_
+* Browser support: IE7 (minor bug), IE8, Chrome 14+
 * If the Graph API service is down, it will fall back silently to facebooks
   default counter.
 
