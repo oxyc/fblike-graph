@@ -1,231 +1,309 @@
 (function($) {
-  var FBLike = this.FBLike = {};
-  var encode = window.encodeURIComponent;
-  var style_element;
-  var count_type = 'like_count';
 
-  FBLike.like_url = '//www.facebook.com/plugins/like.php?href=';
-  FBLike.graph_url = 'https://graph.facebook.com/fql?q=';
-  FBLike.stylesheet = [
-    '.facebook-like-box_count, .facebook-like-button_count {',
-      'overflow: hidden;',
-      'position: relative;',
-    '}',
-    '.facebook-like iframe, .facebook-like .facebook-like-counter {',
-      'float: left',
-    '}',
-    '.facebook-like-counter {',
-      'color: #333;',
-      'text-align: center;',
-      'white-space: nowrap;',
-      'font-family: \'lucida grande\',tahoma,verdana,arial,sans-serif;',
-    '}',
-    // Box
-    '.facebook-like-box_count {',
-      'height: 70px;',
-    '}',
-    '.facebook-like-box_count .facebook-like-counter {',
-      'left: 1px;',
-      'width: 39px;',
-      'height: 19px;',
-      'padding: 6px 1px 2px 3px;',
-      'top: 1px;',
-      'font-size: 13px;',
-      'background: white;',
-      'position: absolute;',
-    '}',
+  // Attach to a global scope
+  var root = this
 
-    // Button
-    '.facebook-like-button_count {',
-      'height: 30px;',
-    '}',
-    '.facebook-like-button_count .facebook-like-counter {',
-      'border: 1px solid #c1c1c1;',
-      'height: 14px;',
-      'line-height: 14px;',
-      'margin-top: 1px;',
-      'margin-left: 6px;',
-      'min-width: 15px;',
-      'padding: 1px 2px;',
-      'font-size: 11px;',
-      'position: relative',
-    '}',
-    '.facebook-like-button_count .facebook-like-nub {',
-      'height: 0;',
-      'left: -5px;',
-      'position: absolute;',
-      'top: 4px;',
-      'width: 5px;',
-      'z-index: 2;',
-    '}',
-    '.facebook-like-button_count .facebook-like-nub s,',
-    '.facebook-like-button_count .facebook-like-nub i {',
-      'border-style: solid;',
-      'border-color: transparent #d7d7d7 transparent;',
-      'border-width: 4px 5px 4px 0;',
-      'display: block;',
-      'position: absolute;',
-      'left: 0;',
-      'top: 0;',
-      'height: 0;',
-    '}',
-    '.facebook-like-button_count .facebook-like-nub i {',
-      'border-right-color: white;',
-      'left: 2px;',
-    '}',
-    // General
-    '.facebook-like iframe {',
-      'border: none;',
-      'overflow: hidden;',
-      'width: 49px;',
-    '}',
-    '.facebook-fetch-error iframe {',
-      'width: 200px',
-    '}',
-    '.facebook-fetch-error .facebook-like-counter {',
-      'display: none;',
-    '}',
-    '.facebook-like-nub, .facebook-like-counter {',
-      'display: inline-block;',
-    '}'
-  ].join('');
+    , encode = window.encodeURIComponent
+    , noop = function noop() {}
+    , slice = Array.prototype.slice
 
-  FBLike.defaults = {
-    send: 'false',
-    layout: 'button_count',
-    width: '53',
-    show_faces: 'false',
-    action: 'like',
-    colorscheme: 'light',
-    font: 'arial',
-    height: '80'
+    , graph_url = 'https://graph.facebook.com/fql?q='
+    , like_url = '//www.facebook.com/plugins/like.php?'
+    , stylesheet = [
+        '.facebook-like-box_count, .facebook-like-button_count {'
+      ,   'overflow: hidden;'
+      ,   'position: relative;'
+      , '}'
+      , '.facebook-like iframe, .facebook-like .facebook-like-counter {'
+      ,   'float: left'
+      , '}'
+      , '.facebook-like-counter {'
+      ,   'color: #333;'
+      ,   'text-align: center;'
+      ,   'white-space: nowrap;'
+      ,   'font-family: \'lucida grande\',tahoma,verdana,arial,sans-serif;'
+      , '}'
+      // Box
+      , '.facebook-like-box_count {'
+      ,   'height: 70px;'
+      , '}'
+      , '.facebook-like-box_count .facebook-like-counter {'
+      ,   'left: 1px;'
+      ,   'width: 39px;'
+      ,   'height: 19px;'
+      ,   'padding: 6px 1px 2px 3px;'
+      ,   'top: 1px;'
+      ,   'font-size: 13px;'
+      ,   'background: white;'
+      ,   'position: absolute;'
+      , '}'
+      // Button
+      , '.facebook-like-button_count {'
+      ,   'height: 30px;'
+      , '}'
+      , '.facebook-like-button_count .facebook-like-counter {'
+      ,   'border: 1px solid #c1c1c1;'
+      ,   'height: 14px;'
+      ,   'line-height: 14px;'
+      ,   'margin-top: 1px;'
+      ,   'margin-left: 6px;'
+      ,   'min-width: 15px;'
+      ,   'padding: 1px 2px;'
+      ,   'font-size: 11px;'
+      ,   'position: relative'
+      , '}'
+      , '.facebook-like-button_count .facebook-like-nub {'
+      ,   'height: 0;'
+      ,   'left: -5px;'
+      ,   'position: absolute;'
+      ,   'top: 4px;'
+      ,   'width: 5px;'
+      ,   'z-index: 2;'
+      , '}'
+      , '.facebook-like-button_count .facebook-like-nub s,'
+      , '.facebook-like-button_count .facebook-like-nub i {'
+      ,   'border-style: solid;'
+      ,   'border-color: transparent #d7d7d7 transparent;'
+      ,   'border-width: 4px 5px 4px 0;'
+      ,   'display: block;'
+      ,   'position: absolute;'
+      ,   'left: 0;'
+      ,   'top: 0;'
+      ,   'height: 0;'
+      , '}'
+      , '.facebook-like-button_count .facebook-like-nub i {'
+      ,   'border-right-color: white;'
+      ,   'left: 2px;'
+      , '}'
+      // General
+      , '.facebook-like iframe {'
+      ,   'border: none;'
+      ,   'overflow: hidden;'
+      ,   'width: 49px;'
+      , '}'
+      , '.facebook-fetch-error iframe {'
+      ,   'width: 200px;'
+      , '}'
+      , '.facebook-fetch-error .facebook-like-counter {'
+      ,   'display: none;'
+      , '}'
+      , '.facebook-like-nub, .facebook-like-counter {'
+      ,   'display: inline-block;'
+      , '}'
+    ].join('')
+
+    // Store a static reference to the style element once created.
+    , style_element;
+
+  // Default parameters to pass to facebooks button.
+  root.defaultButtonOptions = {
+      send: 'false'
+    , layout: 'button_count'
+    , width: '53'
+    , show_faces: 'false'
+    , action: 'like'
+    , colorscheme: 'light'
+    , font: 'arial'
+    , height: '80'
+  };
+  root.defaultSettings = {
+      count: 'like'
+    , timeout: 2000
   };
 
-  FBLike.createButton = function(layout, url) {
-    var content = [
-      '<div class="facebook-like-' + layout + '">',
-        '<iframe src=' + url + ' scrolling="no" frameborder="0" allowTransparency="true"></iframe>',
-        '<div class="facebook-like-counter">',
-          '<div class="facebook-like-number"></div>',
-          '<div class="facebook-like-nub"><s></s><i></i></div>',
-        '</div>',
-      '</div>'
-    ].join('');
+  // Attach the stylesheet to the document.
+  function createStyleElement() {
+    if (style_element) return;
+    if ((style_element = $('#facebook-like-styles')[0])) return;
+    style_element = $('<style id="facebook-like-styles">' + stylesheet + '</style>').appendTo('head')[0];
+  }
 
-    return $(content);
-  };
+  // Return an URI encoded querystring of the passed object.
+  function queryString(options) {
+    var values = [];
+    for (var attribute in options) if (options.hasOwnProperty(attribute)) {
+      values.push(attribute + '=' + encode(options[attribute]));
+    }
+    return values.join('&amp;');
+  }
 
-  FBLike.parseOptions = function(dom) {
-    var options = FBLike.defaults;
-    var layout = dom.getAttribute('data-layout');
+  // ## LikeButton
 
-    options.href = dom.getAttribute('data-href');
+  function LikeButton(dom, settings) {
+    this.dom = dom;
+    this.$dom = $(dom);
+    this.graph_settings = settings;
+    this.options = $.extend({}, root.defaultButtonOptions, this.parseOptions());
+    this.iframe_url = like_url + queryString(this.options);
+  }
+
+  // Parse the data options from the dom element and return them.
+  LikeButton.prototype.parseOptions = function() {
+    var layout = this.dom.getAttribute('data-layout')
+      , options = {};
+
+    options.href = this.dom.getAttribute('data-href');
     if (layout && 'box_count button_count'.indexOf(layout) !== -1) {
-      options.layout = dom.getAttribute('data-layout');
+      options.layout = layout;
     }
     return options;
   };
 
-  FBLike.formatNumber = function(number) {
+  LikeButton.prototype.setData = function(data) {
+    this.graph_data = data;
+    if (!data.error) {
+      var count_number = data[this.graph_settings.count + '_count'];
+      this.counter = root.formatNumber(count_number);
+    }
+    return this;
+  };
+
+  LikeButton.prototype.render = function() {
+    var classes = ['facebook-like-' + this.options.layout];
+    if (this.graph_data.error) classes.push('facebook-fetch-error');
+
+    var content = [
+        '<div class="' + classes.join(' ') + '">'
+      ,   '<iframe src=' + this.iframe_url + ' scrolling="no" frameborder="0" allowTransparency="true"></iframe>'
+      ,   '<div class="facebook-like-counter">'
+      ,     '<div class="facebook-like-number">' + (this.counter ? this.counter : '') + '</div>'
+      ,     '<div class="facebook-like-nub"><s></s><i></i></div>'
+      ,   '</div>'
+      , '</div>'
+    ].join('');
+
+    this.$dom.append(content);
+    return this;
+  };
+
+  // Fetch the Graph data for all buttons bundled into one JSON request.
+  function fetchGraphData(map, settings, cb) {
+    var urls = [];
+    for (var url in map) if (map.hasOwnProperty(url)) {
+      urls.push(url);
+    }
+
+    $.ajax({
+        url: root.createQuery(urls)
+      // @TODO for some reason this is required for IE.
+      , dataType: 'jsonp'
+      , timeout: settings.timeout
+    })
+    .done(function(json) {
+      for (var i = 0, l = json.data.length; i < l; i++) {
+        var data = json.data[i]
+          , buttons = map[data.url];
+
+        for (var j = 0; j < buttons.length; j++) {
+          buttons[j]
+            .setData(data)
+            .render();
+        }
+      }
+      root.success.apply(this, slice.call(arguments));
+    })
+    .fail(function() {
+      for (var url in map) if (map.hasOwnProperty(url)) {
+        for (var i = 0, l = map[url].length; i < l; i++) {
+          map[url][i]
+            .setData({ error: true })
+            .render();
+        }
+      }
+      root.error.apply(this, slice.call(arguments));
+    })
+    .always(typeof cb === 'function' ? cb : undefined);
+  }
+
+  // ### #formatNumber()
+  //
+  // Format a number according to show the Facebook button displays them,
+  // eg. 9100 -> 9.1k
+
+  root.formatNumber = function(number) {
     number = number + '';
     if (number < 1000) {
       return number; // 999
     } else if (number < 10000) {
-      number = (number/1000).toFixed(1) + 'k';
+      number = (number / 1000).toFixed(1) + 'k';
       return number.replace('.0', ''); // 9.1k
     } else if (number < 1000000) {
-      return (number/1000).toFixed(0) + 'k'; // 10k
+      return (number / 1000).toFixed(0) + 'k'; // 10k
     } else if (number < 10000000) {
-      number = (number/1000/1000).toFixed(1) + 'm'; // 1.1m
+      number = (number / 1000 / 1000).toFixed(1) + 'm'; // 1.1m
       return number.replace('.0', '');
     } else if (number < 100000000) {
-      return (number/1000/1000).toFixed(0) + 'm'; // 11m
+      return (number / 1000 / 1000).toFixed(0) + 'm'; // 11m
     }
   };
 
-  FBLike.fetch = function(dom, cb) {
-    var url = dom.getAttribute('data-href');
-    var query = 'SELECT like_count, share_count, comment_count, total_count FROM link_stat WHERE url = \'' + url + '\'';
+  // ### #createQuery()
+  //
+  // Returns the Graph query url for this array of urls.
 
-    $.ajax({
-      url: FBLike.graph_url + encode(query),
-      dataType: 'jsonp', // This is required for IE
-      timeout: 1000
-    }).done(function(data, textStatus) {
-      updateCounter(dom, data, textStatus);
-      if (typeof cb === 'function') cb();
-    }).fail(function(jqXHR, textStatus) {
-      updateCounter(dom, {}, textStatus);
-      if (typeof cb === 'function') cb();
-    });
+  root.createQuery = function(urls) {
+    return graph_url +
+      encode('SELECT url, share_count, like_count, comment_count, ' +
+        'total_count, commentsbox_count, click_count FROM link_stat ' +
+        'WHERE url IN (\'' + urls.join('\', \'') + '\')');
   };
 
 
-  function createStyleElement() {
-    if (style_element) return;
-    if ((style_element = $('#facebook-like-styles')[0])) return;
-    style_element = $('<style id="facebook-like-styles">' + FBLike.stylesheet + '</style>').appendTo('head')[0];
-  }
+  // ### #succes()
+  //
+  // Global success callback.
 
-  function createURL(options) {
-    var values = [];
-    for (var attribute in options) {
-      values.push(attribute + '=' + encode(options[attribute]));
-    }
-    return FBLike.like_url + values.join('&amp;');
-  }
+  root.success = noop;
 
-  function updateCounter(dom, json, textStatus) {
-    var success = false;
-    switch (textStatus) {
-      case 'success':
-        try {
-          var count = json.data[0][count_type];
-          $(dom).find('.facebook-like-number').text(FBLike.formatNumber(count));
-          success = true;
-        } catch(e) {}
-        break;
-      case 'notmodified':
-        success = true;
-        break;
-    }
-    if (!success) {
-      $(dom)
-        .addClass('facebook-fetch-error')
-        .trigger('facebook-fetch-error');
-    }
-  }
+  // ### #error()
+  //
+  // Global error callback.
 
-  FBLike.setCountType = function(type) {
-    count_type = type + '_count';
-  };
+  root.error = noop;
 
-  FBLike.parse = function(dom, cb) {
-    if (typeof dom === 'string') return FBLike.parse($(dom), cb);
-    if (!dom || typeof dom === 'function') {
-      FBLike.parse($('.facebook-like').not('.facebook-like-processed'), dom);
-      return this;
-    }
+  // ### #parse()
+  // Parse the dom for facebook like buttons.
+  //
+  // Options:
+  //
+  // * $el: (optional) Elements to parse. Defaults to .facebook-like selector
+  // * settings: (optional) Object containing graph settings.
+  //   * count: share|like|comment|total|commentsbox|click. Defaults to like.
+  // * cb: (optional) Callback function. This will be called with the $.ajax
+  //   response
+  //
+  // Usage:
+  //
+  //     FBLike.parse();
+  //     FBLike.parse($('.fb-like'), { count: 'total' });
+  //     FBLike.parse(function(data, textStatus) { $frame.fadeIn(); });
 
-    if (dom instanceof jQuery) {
-      var i = 0;
-      var count = dom.length;
-      var counter = function() { if (++i >= count && typeof cb === 'function') cb(); };
-
-      dom.each(function() {
-        FBLike.parse(this, counter);
-      });
-      return this;
-    }
-    if (!dom.nodeName) return false;
-    if (dom.className.indexOf('facebook-like-processed') >= 0) return;
-
+  root.parse = function($el, settings, cb) {
     createStyleElement();
-    var options = FBLike.parseOptions(dom);
-    var url = createURL(options);
-    var $button = FBLike.createButton(options.layout, url);
+    if ($el && $el.nodeName) $el = $($el);
+    if (!($el instanceof jQuery)) {
+      if ($.isPlainObject) settings = $el;
+      else if (typeof $el === 'function') cb = $el;
+      $el = $('.facebook-like');
+    }
+    if (!$.isPlainObject(settings)) {
+      if (typeof settings === 'function') cb = settings;
+      settings = root.defaultSettings;
+    }
 
-    $(dom).append($button).addClass('facebook-like-processed');
-    return FBLike.fetch(dom, cb);
+    var map = {};
+    $el.each(function() {
+      if (!$.data(this, 'fblike')) {
+        var href = this.getAttribute('data-href')
+          , button = new LikeButton(this, settings);
+
+        if (!map[href]) map[href] = [];
+        map[href].push(button);
+        $.data(this, 'fblike', button);
+      }
+    });
+
+    fetchGraphData(map, settings, cb);
   };
-}).call(this, jQuery);
+
+}).call((this.FBLike = {}), jQuery);
