@@ -1,4 +1,4 @@
-# FBLike Graph Data
+# FBLike Graph Data [![Build Status](https://secure.travis-ci.org/oxyc/fblike-graph.png?branch=master)](https://travis-ci.org/oxyc/fblike-graph)
 
 Due to a very annoying [Facebook bug][bug] the visible like count differs from the
 count received from graph api. Due to this, sorting items by facebook likes
