@@ -1,9 +1,20 @@
 {
-  "author": "Oskar Schöldström",
-  "name": "fblike",
+  "name": "FBLike-graph",
+  "description": "Facebook like buttons displaying Graph API counts.",
   "version": "0.0.1",
+  "author": "Oskar Schöldström",
+  "homepage": "https://github.com/oxyc/fblike-graph",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/oxyc/fblike-graph.git"
+  },
+  "scripts": {
+    "test": "./node_modules/grunt/bin/grunt test"
+  },
   "dependencies": {},
   "devDependencies": {
-    "mocha": "*"
+    "grunt": "http://github.com/cowboy/grunt/archive/0ba6d4b529.tar.gz",
+    "grunt-mocha": "~0.1.7",
+    "grunt-doccoh": "~0.1.3"
   }
 }

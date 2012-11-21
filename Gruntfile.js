@@ -1,3 +1,4 @@
+/*globals module:true */
 module.exports = function( grunt ) {
   'use strict';
 
@@ -41,11 +42,17 @@ module.exports = function( grunt ) {
         src: ['index.js'],
         dest: 'dist/<%= pkg.name %>.min.js'
       }
+    },
+
+    doccoh: {
+      src: ['index.js']
     }
   });
 
   // Alias the `test` task to run the `mocha` task instead
+  grunt.loadNpmTasks('grunt-mocha');
+  grunt.loadNpmTasks('grunt-doccoh');
   grunt.registerTask('test', 'mocha');
+  grunt.registerTask('docs', 'doccoh');
   grunt.registerTask('build', 'concat min');
-
 };

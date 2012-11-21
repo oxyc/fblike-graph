@@ -2,7 +2,7 @@
   "curly": false,
   "eqeqeq": true,
   "forin": true,
-  "immed": true,
+  "immed": false,
   "indent": 2,
   "latedef": true,
   "newcap": true,
@@ -16,4 +16,6 @@
   "boss": true,
   "eqnull": true,
   "browser": true,
+  "laxcomma": true,
+  "predef": ["jQuery"]
 }

@@ -1,4 +1,4 @@
-# FBLike
+# FBLike Graph Data
 
 Due to a very annoying [Facebook bug][bug] the visible like count differs from the
 count received from graph api. Due to this, sorting items by facebook likes
@@ -11,6 +11,9 @@ API.
 
 ## Getting started
 
+* Include jQuery.
+* Include this script.
+
 ```html
 <div class="facebook-like" data-href="http://www.google.com" data-layout="box_count"></div>
 ```
@@ -19,28 +22,27 @@ API.
 FBLike.parse();
 ```
 
-## Usage
+### `FBLike.parse(elements, options, callback)`
 
-### `FBLike.parse(element, callback)`
-
-* `element` (optional) A DOM Element, a jQuery selector or a jQuery object.
+* `element` (optional) A jQuery object.
   If left empty, all elements with the `.facebook-like` class will be parsed.
+
+* `options` (optional)
+  * `options.count` (defaults to like)
 
 * `callback` (optional) Called once the data has been fetched.
 
-Check the test suite for examples.
+Check the test suite or docs/example.html for examples.
 
 ## Features
 
-* Exposes some internal functions which you can override for customization
-* Fails gracefully.
 * Has a test suite (Currently not tested crossbrowser!)
-* Browser support: IE7-9, Chrome 14+, FF16, Opera 10+, Safari 5.1 (windows)
 * If the Graph API service is down, it will fall back silently to facebooks
   default counter.
 
 ## Limitations
 
+* Depends on jQuery.
 * The only options which will be parsed are layout and href.
 * Currently only `box_count` and `button_count` works as a layout.
 * The message popup won't be displayed once liked as this method uses an
@@ -48,8 +50,10 @@ Check the test suite for examples.
 
 ## Known bugs
 * Tests fail in older FF (mocha), graceful fallback fails in safari < 5.1 (windows)
-* Currently the script does a ajax request on each button, I plan to bundle
-  these into one request.
+
+## Build
+
+`yeoman build`
 
 ## License
 
