@@ -317,7 +317,9 @@
       }
     });
 
-    fetchGraphData(map, settings, cb);
+    if ($.isEmptyObject(map)) cb({}, 'notmodified');
+    else fetchGraphData(map, settings, cb);
+    return this;
   };
 
 }).call((this.FBLike = {}), jQuery);
