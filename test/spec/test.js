@@ -127,9 +127,6 @@
 
       before(function() {
         success = FBLike.success;
-        FBLike.success = function() {
-          success_called = true;
-        };
       });
 
       it('should parse specified element', function(done) {
@@ -157,7 +154,10 @@
       });
 
       it('should trigger exposed success function', function(done) {
-        FBLike.parse($('#dom_element'), function() {
+        FBLike.success = function() {
+          success_called = true;
+        };
+        FBLike.parse($('#global_success'), function() {
           expect(success_called).to.be.ok();
           done();
         });
