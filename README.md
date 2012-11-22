@@ -22,23 +22,22 @@ API.
 FBLike.parse();
 ```
 
-### `FBLike.parse(elements, options, callback)`
+### FBLike.parse(elements, options, callback)
 
 * `element` (optional) A jQuery object.
   If left empty, all elements with the `.facebook-like` class will be parsed.
-
 * `options` (optional)
   * `options.count` (defaults to like)
-
 * `callback` (optional) Called once the data has been fetched.
 
 Check the test suite or docs/example.html for examples.
 
 ## Features
 
-* Has a test suite (Currently not tested crossbrowser!)
+* Has a test suite
 * If the Graph API service is down, it will fall back silently to facebooks
   default counter.
+* Support: Chrome 14+, IE 7+, FF 3.6+, iOS 3.2+, Safari 4.1+
 
 ## Limitations
 
@@ -47,13 +46,12 @@ Check the test suite or docs/example.html for examples.
 * Currently only `box_count` and `button_count` works as a layout.
 * The message popup won't be displayed once liked as this method uses an
   iframe.
-
-## Known bugs
-* Tests fail in older FF (mocha), graceful fallback fails in safari < 5.1 (windows)
+* Visual issues: IE6, iPhone 3/4, FF
 
 ## Build
 
-`yeoman build`
+* `yeoman build`
+* `yeoman docs`
 
 ## License
 
