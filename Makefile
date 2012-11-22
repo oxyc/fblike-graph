@@ -9,10 +9,10 @@ all:
 browsers: ie7 ie8 ie9 opera10 ff3.6 ff4 ff16 chrome14 ios3 ios3.2 ios4 ios4.3.2 ios5 ios5.1 ios6
 
 launch_browser:
-	$(BROWSER_CMD) "http://www.browserstack.com/start#os=$(OS)&os_version=$(OS_VERSON)&browser=$(BROWSER)&browser_version=$(BROWSER_VERSION)&zoom_to_fit=true&resolution=1024x768&speed=1&url=$(URL)&start=true"
+	$(BROWSER_CMD) "http://www.browserstack.com/start#os=$(OS)&os_version=$(OS_VERSION)&browser=$(BROWSER)&browser_version=$(BROWSER_VERSION)&zoom_to_fit=true&resolution=1024x768&speed=1&url=$(URL)&start=true"
 
 launch_device:
-	$(BROWSER_CMD) "http://www.browserstack.com/start#os=$(OS)&os_version=$(OS_VERSON)&device=$(DEVICE)&zoom_to_fit=true&resolution=1024x768&speed=1&url=$(URL)&start=true"
+	$(BROWSER_CMD) "http://www.browserstack.com/start#os=$(OS)&os_version=$(OS_VERSION)&device=$(DEVICE)&zoom_to_fit=true&resolution=1024x768&speed=1&url=$(URL)&start=true"
 
 ie7:
 	@$(MAKE) -s OS=Windows OS_VERSION=XP BROWSER=IE BROWSER_VERSION=7.0 launch_browser
