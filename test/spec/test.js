@@ -57,31 +57,59 @@
       before(function() {
         createQuery = FBLike.createQuery;
         error = FBLike.error;
+      });
+
+      it('should fall back to default look when graph service sends 404', function(done) {
         FBLike.createQuery = function() {
           return 'foobar';
         };
-        FBLike.error = function() {
-          error_called = true;
-        };
-      });
-
-      it('should fall back to default look when graph service is down', function(done) {
-        FBLike.parse($('#failure'), function(data, textStatus) {
-          var $button = $('#failure');
+        FBLike.parse($('#failure_404'), function(data, textStatus) {
+          var $button = $('#failure_404');
           data = data; // jshint
 
           expect(textStatus).to.equal('error');
-          // This fails in phantomjs but not browsers?
-          // expect($button.find('iframe').width()).to.be(200);
-          // expect($button.find('.facebook-like-counter').is(':visible')).to.be(false);
+          expect($button.find('iframe').width()).to.be(200);
+          expect($button.find('.facebook-like-counter').is(':visible')).to.be(false);
           expect($button.find('.facebook-like-number').text()).to.be.empty();
 
           done();
         });
       });
 
+      it('should fall back to default look when graph service timeouts', function(done) {
+        FBLike.createQuery = function() {
+          return 'https://foo.bar';
+        };
+        FBLike.defaultSettings.timeout = 1000;
+
+        FBLike.parse($('#failure_timeout'), function(data, textStatus) {
+          data = data; // jshint
+          expect(textStatus).to.equal('timeout');
+          done();
+        });
+      });
+
+      it('should fall back to default look when graph service returns invalid json', function(done) {
+        FBLike.createQuery = function(urls) {
+          return 'https://graph.facebook.com/fql?q=' +
+            window.encodeURIComponent('SELECT total_count FROM link_stat WHERE url IN (\'' + urls.join('\', \'') + '\')');
+        };
+
+        FBLike.parse($('#failure_invalid'), function(data, textStatus) {
+          data = data; // jshint
+          expect(textStatus).to.equal('parseerror');
+          done();
+        });
+      });
+
       it('should trigger exposed error function', function(done) {
-        FBLike.parse($('#doesnt_exist'), function() {
+        FBLike.createQuery = function() {
+          return 'foobar';
+        };
+        FBLike.error = function() {
+          error_called = true;
+        };
+        FBLike.parse($('#failure_exposed'), function() {
           expect(error_called).to.be.ok();
           done();
         });
@@ -90,6 +118,7 @@
       after(function() {
         FBLike.createQuery = createQuery;
         FBLike.error = error;
+        FBLike.defaultSettings.timeout = 2000;
       });
     });
 

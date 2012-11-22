@@ -183,26 +183,8 @@
       urls.push(url);
     }
 
-    $.ajax({
-        url: root.createQuery(urls)
-      // @TODO for some reason this is required for IE.
-      , dataType: 'jsonp'
-      , timeout: settings.timeout
-    })
-    .done(function(json) {
-      for (var i = 0, l = json.data.length; i < l; i++) {
-        var data = json.data[i]
-          , buttons = map[data.url];
-
-        for (var j = 0; j < buttons.length; j++) {
-          buttons[j]
-            .setData(data)
-            .render();
-        }
-      }
-      root.success.apply(this, slice.call(arguments));
-    })
-    .fail(function() {
+    function graphFailure() {
+      var args = slice.call(arguments);
       for (var url in map) if (map.hasOwnProperty(url)) {
         for (var i = 0, l = map[url].length; i < l; i++) {
           map[url][i]
@@ -210,9 +192,41 @@
             .render();
         }
       }
-      root.error.apply(this, slice.call(arguments));
+      root.error.apply(this, args);
+      if (typeof cb === 'function') cb.apply(this, args);
+    }
+
+    $.ajax({
+        url: root.createQuery(urls)
+      // Graph API wont allow crossdomain for IE unless jsonp is used.
+      , dataType: 'jsonp'
+      , timeout: settings.timeout
     })
-    .always(typeof cb === 'function' ? cb : undefined);
+    .done(function(json, textStatus, jqXHR) {
+      var args = slice.call(arguments);
+      try {
+        for (var i = 0, l = json.data.length; i < l; i++) {
+          var data = json.data[i]
+            , buttons = map[data.url];
+
+          for (var j = 0; j < buttons.length; j++) {
+            buttons[j]
+              .setData(data)
+              .render();
+          }
+        }
+      } catch(e) {
+        // The json array wasnt what we expected.
+        textStatus = 'parseerror';
+        return graphFailure.call(this, json, textStatus, jqXHR);
+      }
+      // Call success handlers
+      root.success.apply(this, args);
+      // We dont use the deferred.always as we want to return an error
+      // on unexpected json value.
+      if (typeof cb === 'function') cb.apply(this, args);
+    })
+    .fail(graphFailure);
   }
 
   // ### #formatNumber()
